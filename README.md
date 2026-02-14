@@ -141,6 +141,16 @@ The installer handles 5 compatibility issues between Termux and standard Linux:
 
 5. **No systemd** — Some install steps check for systemd. The `CONTAINER=1` env var bypasses these checks.
 
+## Performance
+
+CLI commands like `openclaw status` may feel slower compared to a PC. This delay occurs during Node.js cold start, when hundreds of JS files are read from disk and parsed. The main causes are:
+
+- **Random read performance** — Reading hundreds of small files sequentially is limited by IOPS, where mobile UFS storage is slower than PC NVMe SSDs
+- **Android file encryption** — Android encrypts the entire filesystem (FBE), adding decryption overhead on every file read
+- **App sandbox** — Termux runs inside `/data/data/`, passing through Android's security layers
+
+However, once the gateway is running, the Node.js process stays in memory with no further cold starts. AI response speed is processed on external servers, so it's the same as on a PC.
+
 ## Project Structure
 
 ```
@@ -258,17 +268,7 @@ This removes the OpenClaw package, patches, environment variables, and temp file
 
 ## Troubleshooting
 
-### `openclaw --version` fails after install
-Restart Termux or run `source ~/.bashrc` to load the environment variables.
-
-### npm install fails with native module errors
-Ensure build tools are installed:
-```bash
-pkg install python make cmake clang
-```
-
-### "Not running in Termux" error
-This project is designed for Termux only. Make sure you're running from within the Termux app, not adb shell or another terminal.
+See the [Troubleshooting Guide](docs/troubleshooting.md) for detailed solutions.
 
 ## License
 
