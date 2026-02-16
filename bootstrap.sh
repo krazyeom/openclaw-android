@@ -1,15 +1,25 @@
 #!/usr/bin/env bash
 # bootstrap.sh - Download and run OpenClaw on Android installer
-# Usage: curl -sL https://raw.githubusercontent.com/AidanPark/openclaw-android/main/bootstrap.sh | bash
+# Usage: curl -sL https://raw.githubusercontent.com/krazyeom/openclaw-android/main/bootstrap.sh | bash -s -- [-v|--verbose]
 set -euo pipefail
 
-REPO_BASE="https://raw.githubusercontent.com/AidanPark/openclaw-android/main"
+REPO_BASE="https://raw.githubusercontent.com/krazyeom/openclaw-android/main"
 INSTALL_DIR="$HOME/.openclaw-android/installer"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 BOLD='\033[1m'
 NC='\033[0m'
+
+# Parse arguments
+VERBOSE_FLAG=""
+for arg in "$@"; do
+    case $arg in
+        -v|--verbose)
+            VERBOSE_FLAG="-v"
+            ;;
+    esac
+done
 
 echo ""
 echo -e "${BOLD}OpenClaw on Android - Bootstrap${NC}"
@@ -64,8 +74,8 @@ echo ""
 echo "Running installer..."
 echo ""
 
-# Run installer
-bash "$INSTALL_DIR/install.sh"
+# Run installer with verbose flag if provided
+bash "$INSTALL_DIR/install.sh" $VERBOSE_FLAG
 
 # Keep uninstall.sh accessible, clean up the rest
 cp "$INSTALL_DIR/uninstall.sh" "$HOME/.openclaw-android/uninstall.sh"

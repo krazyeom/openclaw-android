@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # install.sh - One-click installer for OpenClaw on Termux (Android)
-# Usage: bash install.sh
+# Usage: bash install.sh [-v|--verbose]
 set -euo pipefail
 
 RED='\033[0;31m'
@@ -10,6 +10,17 @@ BOLD='\033[1m'
 NC='\033[0m'
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Parse arguments
+VERBOSE=""
+for arg in "$@"; do
+    case $arg in
+        -v|--verbose)
+            VERBOSE="--verbose"
+            shift
+            ;;
+    esac
+done
 
 echo ""
 echo -e "${BOLD}========================================${NC}"
@@ -62,7 +73,7 @@ echo "Running: npm install -g openclaw@latest"
 echo "This may take several minutes..."
 echo ""
 
-npm install -g openclaw@latest
+npm install -g openclaw@latest $VERBOSE
 
 echo ""
 echo -e "${GREEN}[OK]${NC}   OpenClaw installed"
